@@ -1,0 +1,25 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0-focal AS build
+
+RUN dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.10
+
+ENV PATH="${PATH}:/root/.dotnet/tools"
+
+WORKDIR "/src/echo-api"
+COPY ["echo-api/echo-api.csproj", "."]
+
+RUN dotnet restore "echo-api.csproj"
+COPY echo-api .
+RUN dotnet build "echo-api.csproj" -c Debug -o /app/build
+
+WORKDIR "/src/echo-api.tests"
+COPY ["echo-api.tests/echo-api.tests.csproj", "."]
+
+RUN dotnet restore "echo-api.tests.csproj"
+COPY echo-api.tests .
+RUN dotnet build "echo-api.tests.csproj" -c Debug -o /app/build
+
+COPY run-tests.sh .
+
+RUN chmod +x run-tests.sh
+
+CMD "./run-tests.sh"

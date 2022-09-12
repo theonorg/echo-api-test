@@ -1,0 +1,46 @@
+name: Echo API
+
+on:
+  push:
+    paths:
+      - 'src/echo-webapp/**'
+      - '.github/workflows/echo-webapp.yml'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: |
+        dotnet restore src/echo-webapp/echo-webapp.csproj
+    
+    - name: Build
+      run: |
+        dotnet build --no-restore src/echo-webapp/echo-webapp.csproj
+
+  publish:
+    if: github.ref == 'refs/heads/main'
+    env:
+      DOCKER_USER: ${{ secrets.DOCKER_USER }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      IMAGE_NAME: ${{ secrets.DOCKER_USER }}/aptiv-echo-webapp:${{ github.run_id }}
+
+    steps:
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ env.DOCKER_USER }}
+          password: ${{ env.DOCKER_PASSWORD }}
+
+      - run: |
+          docker build -f Dockerfile.multi -t ${{ env.IMAGE_NAME}} src/echo-api
+          docker push ${{ env.IMAGE_NAME}}
+
+
