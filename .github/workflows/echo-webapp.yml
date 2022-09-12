@@ -33,6 +33,7 @@ jobs:
       IMAGE_NAME: ${{ secrets.DOCKER_USER }}/aptiv-echo-webapp:${{ github.run_id }}
 
     runs-on: ubuntu-latest
+    needs: build
 
     steps:
       - uses: actions/checkout@v3

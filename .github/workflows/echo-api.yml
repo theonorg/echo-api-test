@@ -46,6 +46,7 @@ jobs:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       IMAGE_NAME: ${{ secrets.DOCKER_USER }}/aptiv-echo-api:${{ github.run_id }}
 
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -56,7 +57,7 @@ jobs:
           password: ${{ env.DOCKER_PASSWORD }}
 
       - run: |
-          docker build -f Dockerfile.multi -t ${{ env.IMAGE_NAME}} echo-api
+          docker build -f echo-api/Dockerfile.multi -t ${{ env.IMAGE_NAME}} echo-api
           docker push ${{ env.IMAGE_NAME}}
 
 
