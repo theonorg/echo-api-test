@@ -43,7 +43,7 @@ jobs:
           password: ${{ env.DOCKER_PASSWORD }}
 
       - run: |
-          docker build -f Dockerfile.multi -t ${{ env.IMAGE_NAME}} echo-api
+          docker build -t ${{ env.IMAGE_NAME}} echo-webapp
           docker push ${{ env.IMAGE_NAME}}
 
 
