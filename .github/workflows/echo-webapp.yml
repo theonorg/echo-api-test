@@ -32,6 +32,8 @@ jobs:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       IMAGE_NAME: ${{ secrets.DOCKER_USER }}/aptiv-echo-webapp:${{ github.run_id }}
 
+    runs-on: ubuntu-latest
+    
     steps:
       - name: Login to DockerHub
         uses: docker/login-action@v2
